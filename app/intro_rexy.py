@@ -68,42 +68,17 @@ class Intro_Bot():
         print(tag)
         bot_response = ""
         if result < 0.6:
-            bot_response += "I'm think that you are " + tag + " me, but can you rephrase what you said please :)"
+            bot_response += "I'm think that you are " + tag + " me. Can you rephrase a little so I can be sure?"
         elif tag == "asking a question to":
             inputProcessing = InputProcessing()
             optimized_usr_message = inputProcessing.optimizeForQuery(user_message)
             tdApiCalls = TdApiCalls()
             api_response = tdApiCalls.make_kb_search(optimized_usr_message)
-            article, article_raw = tdApiCalls.find_article_where_answer_might_be(api_response, optimized_usr_message)
-            bert = BertTransferLearning()
-            if (len(article.split()) < 380):
-                prediction = bert.predict_answer(user_message, article)
-                if(prediction == "" or ["[CLS]","[SEP]"] in prediction):
-                    prediction = "Sorry, I'm not really sure about that one, but maybe you'll find something here:\n" + article_raw
-                print("preds",prediction)
-            else:
-                prediction = "Sorry!, I couldn't get you a short answer, but i got you this article:\n" + article_raw
-            
-            bot_response +=  prediction
+            bot_response += tdApiCalls.find_answer(api_response, user_message)
         else:
             bot_response += random.choice(responses)
         return bot_response
 
-# def main():
-#     x = Intro_Bot()
-#     print(x.chat("hello"))
-#     print("\n")
-#     print(x.chat("goodbye"))
-#     print("\n")
-#     print(x.chat("what are the hours"))
-#     print("\n")
-#     print(x.chat("that is all"))
-#     print("\n")
-#     print(x.chat("how do i"))
-#     print("\n")
-#     print(x.chat("no"))
-    
-# main()
             
 
  
